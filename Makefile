@@ -1,5 +1,7 @@
 export RAW_PATH = ../dados-CoinGecko/AWS/S3/RAW/
 export WORK_PATH = ../dados-CoinGecko/AWS/S3/WORK/
+export RAW_CONFIG = ./assets/config.ingestion.json
+export WORK_CONFIG = ./assets/config.preparation.json
 
 
 terragrunt/init:
