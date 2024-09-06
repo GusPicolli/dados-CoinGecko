@@ -23,8 +23,6 @@
   "atl": "double",
   "atl_change_percentage": "double",
   "atl_date": "timestamp",
-  "roi": {"times": "double",
-   "currency": "string",
-   "percentage": "double"},
+  "roi": "string",
   "last_updated": "timestamp"
 }
