@@ -5,26 +5,25 @@ export WORK_CONFIG = ./assets/config.preparation.json
 export UTILS_PATH = ../dados-CoinGecko/assets
 export APP_PATH = ../dados-CoinGecko/src
 
-terragrunt/init:
-	(cd terraform && terragrunt init)
+venv:
+	python -m venv venv 
 
-terragrunt/plan:
-	(cd terraform && terragrunt plan)
+venv_requirements:
+	venv\Scripts\activate && pip install -r requirements.txt 
 
-terragrunt/apply:
-	(cd terraform && terragrunt apply)
+venv_run:
+	venv\Scripts\activate && set PYTHONPATH=${UTILS_PATH} && python src/app.py
 
-terragrunt/init:
-	(cd terraform && terragrunt init)
-
-terragrunt/clean:
-	(cd terraform && rm -rf .terraform .terraform.lock.hcl)
+venv_remove:
+	rmdir /S /Q venv
 
 requirements:
 	pip install -r requirements.txt
 
-run:
+run: 
 	set PYTHONPATH=${UTILS_PATH} && python src/app.py
 
 run_tests:
 	set PYTHONPATH=${APP_PATH};${UTILS_PATH} && pytest tests/ingestion_preparation_test.py
+
+all: venv venv_requirements venv_run
