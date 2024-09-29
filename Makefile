@@ -1,9 +1,14 @@
-export RAW_PATH=/app/AWS/S3/RAW/
-export WORK_PATH=/app/AWS/S3/WORK/
-export RAW_CONFIG=/app/config.ingestion.json
-export WORK_CONFIG=/app/config.preparation.json
-export UTILS_PATH=/app/assets
-export APP_PATH=/app/src
+export RAW_PATH = ../dados-CoinGecko/AWS/S3/RAW/
+export WORK_PATH = ../dados-CoinGecko/AWS/S3/WORK/
+export RAW_CONFIG = ./assets/config.ingestion.json
+export WORK_CONFIG = ./assets/config.preparation.json
+export UTILS_PATH=../dados-CoinGecko/assets
+export APP_PATH=../dados-CoinGecko/src
+
+export RAW_PATH_DOCKER=/app/AWS/S3/RAW/
+export WORK_PATH_DOCKER=/app/AWS/S3/WORK/
+export RAW_CONFIG_DOCKER=/app/config.ingestion.json
+export WORK_CONFIG_DOCKER=/app/config.preparation.json
 
 venv:
 	python -m venv venv 
@@ -31,5 +36,11 @@ docker_build:
 
 docker_run:
 	cd docker && docker-compose up
+
+cprofile_time:
+	set PYTHONPATH=${UTILS_PATH} && python -m cProfile -s time src/app.py7
+
+cprofile_perf:
+	set PYTHONPATH=${UTILS_PATH} && python -m cProfile -o file_profiling.prof src/app.py
 
 all: venv venv_requirements venv_run

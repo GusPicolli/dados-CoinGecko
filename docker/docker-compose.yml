@@ -7,12 +7,10 @@ services:
       dockerfile: docker/Dockerfile
     container_name: dados_coingecko
     environment:
-      RAW_PATH: ${RAW_PATH}
-      WORK_PATH: ${WORK_PATH}
-      RAW_CONFIG: ${RAW_CONFIG}
-      WORK_CONFIG: ${WORK_CONFIG}
-      UTILS_PATH: ${UTILS_PATH}
-      APP_PATH: ${APP_PATH}
+      RAW_PATH: ${RAW_PATH_DOCKER}
+      WORK_PATH: ${WORK_PATH_DOCKER}
+      RAW_CONFIG: ${RAW_CONFIG_DOCKER}
+      WORK_CONFIG: ${WORK_CONFIG_DOCKER}
     ports:
       - "8000:8000"
     command: ["python", "app.py"]
