@@ -14,7 +14,7 @@ Versão Python utilizada: 3.11.1
 
 Para instalar as bibliotecas necessárias do processo, usar o comando abaixo:
 
-pip install -r requiriments
+pip install -r requirements
 
 Biblioteca utilizadas:
 
