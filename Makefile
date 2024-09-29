@@ -38,9 +38,12 @@ docker_run:
 	cd docker && docker-compose up
 
 cprofile_time:
-	set PYTHONPATH=${UTILS_PATH} && python -m cProfile -s time src/app.py7
+	set PYTHONPATH=${UTILS_PATH} && python -m cProfile -s time src/app.py
 
 cprofile_perf:
 	set PYTHONPATH=${UTILS_PATH} && python -m cProfile -o file_profiling.prof src/app.py
+
+snakeviz:
+	snakeviz file_profiling.prof
 
 all: venv venv_requirements venv_run
