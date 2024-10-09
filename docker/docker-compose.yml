@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: dados_coingecko
+    environment:
+      RAW_PATH: ${RAW_PATH_DOCKER}
+      WORK_PATH: ${WORK_PATH_DOCKER}
+      RAW_CONFIG: ${RAW_CONFIG_DOCKER}
+      WORK_CONFIG: ${WORK_CONFIG_DOCKER}
+    ports:
+      - "8000:8000"
+    command: ["python", "app.py"]
