@@ -47,3 +47,4 @@ snakeviz:
 	snakeviz file_profiling.prof
 
 all: venv venv_requirements venv_run
+
