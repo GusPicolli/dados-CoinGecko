@@ -1,5 +1,3 @@
-import requests
-import json
 import datetime as dt
 import utils
 import logging

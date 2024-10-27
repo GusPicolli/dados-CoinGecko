@@ -1,16 +1,30 @@
 version: "3.8"
 
 services:
-  app:
+  ingestion:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-    container_name: dados_coingecko
+    container_name: dados_coingecko_ingestion
     environment:
-      RAW_PATH: ${RAW_PATH_DOCKER}
-      WORK_PATH: ${WORK_PATH_DOCKER}
-      RAW_CONFIG: ${RAW_CONFIG_DOCKER}
-      WORK_CONFIG: ${WORK_CONFIG_DOCKER}
-    ports:
-      - "8000:8000"
-    command: ["python", "app.py"]
+      FUNCTION: "ingestion"
+      RAW_PATH: /app/AWS/S3/RAW/
+      WORK_PATH: /app/AWS/S3/WORK/
+      RAW_CONFIG: /app/assets/config.ingestion.json
+      WORK_CONFIG: /app/assets/config.preparation.json
+    volumes:
+      - ..:/app
+
+  preparation:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: dados_coingecko_preparation
+    environment:
+      FUNCTION: "preparation"
+      RAW_PATH: /app/AWS/S3/RAW/
+      WORK_PATH: /app/AWS/S3/WORK/
+      RAW_CONFIG: /app/assets/config.ingestion.json
+      WORK_CONFIG: /app/assets/config.preparation.json
+    volumes:
+      - ..:/app
