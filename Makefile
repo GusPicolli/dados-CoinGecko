@@ -7,8 +7,8 @@ export WORK_CONFIG = ./assets/config.preparation.json
 
 export RAW_PATH_DOCKER=/app/AWS/S3/RAW/
 export WORK_PATH_DOCKER=/app/AWS/S3/WORK/
-export RAW_CONFIG_DOCKER=/app/assets/config.ingestion.json
-export WORK_CONFIG_DOCKER=/app/assets/config.preparation.json
+export RAW_CONFIG_DOCKER=/app/config.ingestion.json
+export WORK_CONFIG_DOCKER=/app/config.preparation.json
 
 ## VENV ##
 venv:
@@ -47,10 +47,10 @@ docker_build:
 	cd docker && docker-compose up --build
 
 docker_run_ingestion:
-	cd docker && docker-compose up ingestion
+	cd docker && docker-compose run ingestion
 
 docker_run_preparation:
-	cd docker && docker-compose up preparation
+	cd docker && docker-compose run preparation
 	
 docker_run:
 	cd docker && docker-compose up

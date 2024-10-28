@@ -7,24 +7,30 @@ services:
       dockerfile: docker/Dockerfile
     container_name: dados_coingecko_ingestion
     environment:
-      FUNCTION: "ingestion"
-      RAW_PATH: /app/AWS/S3/RAW/
-      WORK_PATH: /app/AWS/S3/WORK/
-      RAW_CONFIG: /app/assets/config.ingestion.json
-      WORK_CONFIG: /app/assets/config.preparation.json
+      RAW_PATH: ${RAW_PATH_DOCKER}
+      WORK_PATH: ${WORK_PATH_DOCKER}
+      RAW_CONFIG: ${RAW_CONFIG_DOCKER}
+      WORK_CONFIG: ${WORK_CONFIG_DOCKER}
     volumes:
-      - ..:/app
+      - shared-data:/app/AWS/S3/RAW
+    command: ["python", "-c", "from app import ingestion_handler; ingestion_handler({'subsource': 'coingecko'})"]
 
   preparation:
     build:
       context: ..
       dockerfile: docker/Dockerfile
     container_name: dados_coingecko_preparation
+    depends_on:
+      - ingestion
     environment:
-      FUNCTION: "preparation"
-      RAW_PATH: /app/AWS/S3/RAW/
-      WORK_PATH: /app/AWS/S3/WORK/
-      RAW_CONFIG: /app/assets/config.ingestion.json
-      WORK_CONFIG: /app/assets/config.preparation.json
+      RAW_PATH: ${RAW_PATH_DOCKER}
+      WORK_PATH: ${WORK_PATH_DOCKER}
+      RAW_CONFIG: ${RAW_CONFIG_DOCKER}
+      WORK_CONFIG: ${WORK_CONFIG_DOCKER}
     volumes:
-      - ..:/app
+      - shared-data:/app/AWS/S3/RAW
+    command: ["python", "-c", "from app import preparation_handler; preparation_handler({'subsource': 'coingecko'})"]
+
+volumes:
+  shared-data:
+    driver: local

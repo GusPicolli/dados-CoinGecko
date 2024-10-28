@@ -92,7 +92,6 @@ def preparation(event: dict):
     """
     path_config = env.WORK_CONFIG
     metadado = json.load(open(path_config))
-
     path_raw = env.RAW_PATH
     df = pd.read_parquet(path_raw)
 
