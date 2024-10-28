@@ -31,6 +31,19 @@ services:
       - shared-data:/app/AWS/S3/RAW
     command: ["python", "-c", "from app import preparation_handler; preparation_handler({'subsource': 'coingecko'})"]
 
+  airflow:
+    image: apache/airflow:2.6.0
+    container_name: airflow
+    ports:
+      - "8080:8080"  # Porta para acessar a interface web do Airflow
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor 
+    volumes:
+      - ./dags:/opt/airflow/dags  # Diretório para os DAGs do Airflow
+      - shared-data:/app/AWS/S3/RAW  # Para compartilhar dados com Airflow
+    command: ["airflow", "standalone"]  # Inicializa o Airflow em modo autônomo
+
 volumes:
   shared-data:
     driver: local

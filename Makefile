@@ -53,14 +53,16 @@ docker_run_preparation:
 	cd docker && docker-compose run preparation
 	
 docker_run:
-	cd docker && docker-compose up
+	cd docker && \
+    docker-compose run airflow-worker airflow users create --role Admin --username admin --email admin --firstname admin --lastname admin --password admin && \
+    docker-compose up
 
 ## CPROFILE ##
 
 cprofile_time:
 	python -m cProfile -s time src/app.py
 
-cprofile_perf:
+cprofile_prof:
 	python -m cProfile -o file_profiling.prof src/app.py
 
 ## SNAKEVIZ ##
