@@ -1,5 +1,5 @@
 # Dockerfile
-FROM python:3.11-slim
+FROM apache/airflow:2.2.4-python3.9
 
 WORKDIR /app
 

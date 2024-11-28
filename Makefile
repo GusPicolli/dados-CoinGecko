@@ -9,16 +9,17 @@ export RAW_PATH_DOCKER=/app/AWS/S3/RAW/
 export WORK_PATH_DOCKER=/app/AWS/S3/WORK/
 export RAW_CONFIG_DOCKER=/app/config.ingestion.json
 export WORK_CONFIG_DOCKER=/app/config.preparation.json
+export AIRFLOW_UID=50000
 
 ## VENV ##
 venv:
-	python -m venv venv 
+	python3.9 -m venv venv
 
 venv_requirements:
-	venv\Scripts\activate && pip install -r requirements.txt 
+	venv\Scripts\activate && pip install -r requirements-dev.txt
 
 venv_run:
-	venv\Scripts\activate && python src/app.py
+	venv\Scripts\activate && python3.9 src/app.py
 
 ## VENV TESTS ##
 venv_requirements_tests:
@@ -36,7 +37,7 @@ requirements:
 	pip install -r requirements.txt
 
 run: 
-	python src/app.py
+	python3.9 src/app.py
 
 run_tests:
 	pytest tests/ingestion_preparation_test.py
@@ -60,10 +61,10 @@ docker_run:
 ## CPROFILE ##
 
 cprofile_time:
-	python -m cProfile -s time src/app.py
+	python3.9 -m cProfile -s time src/app.py
 
 cprofile_prof:
-	python -m cProfile -o file_profiling.prof src/app.py
+	python3.9 -m cProfile -o file_profiling.prof src/app.py
 
 ## SNAKEVIZ ##
 

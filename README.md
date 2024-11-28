@@ -22,7 +22,7 @@ Utilização de ferramentas da AWS com foco em Terraform, Airflow e Docker.
 
 ## Tecnologia
 
-- **Versão do Python:** 3.11.1
+- **Versão do Python:** 3.9.20
 
 ## Instalação de Dependências
 
@@ -35,20 +35,17 @@ pip install -r requirements.txt
 
 As seguintes bibliotecas são necessárias para o funcionamento do projeto:
 
-- `certifi==2024.7.4`
-- `charset-normalizer==3.3.2`
-- `colorama==0.4.6`
-- `idna==3.7`
-- `iniconfig==2.0.0`
-- `numpy==2.0.1`
-- `packaging==24.1`
-- `pandas==2.2.2`
-- `pluggy==1.5.0`
-- `pyarrow==17.0.0`
-- `pytest==8.3.3`
-- `python-dateutil==2.9.0.post0`
-- `pytz==2024.1`
-- `requests==2.32.3`
-- `six==1.16.0`
-- `tzdata==2024.1`
-- `urllib3==2.2.2`
+certifi==2022.12.7
+charset-normalizer==2.0.12 
+idna==3.3
+numpy==1.21.6
+pandas==1.3.5
+pyarrow==8.0.0
+python-dateutil==2.8.2
+pytz==2021.3
+requests==2.27.1
+six==1.16.0
+tzdata==2021.5
+urllib3==1.26.12
+mysql-connector-python==8.0.28
+SQLAlchemy==1.3.24
