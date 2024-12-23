@@ -3,6 +3,8 @@ import json
 import pandas as pd
 import logging
 import env
+import sys
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -67,15 +69,17 @@ def load_data(df:pd.DataFrame, path: str, filename: str) -> str:
         raise
 
 def ingestion(event: dict):
-    """   
+    """   No
     Handles the ingestion process: requests data from a URL and saves it as a Parquet file.
         
         Args:
             event (dict): A dictionary with the event parameters, including the "subsource".
     """
-    path_config = env.RAW_CONFIG
-    config_ingestion = json.load(open(path_config))
-  
+    #path_config = env.RAW_CONFIG
+    #config_ingestion = json.load(open(path_config))
+    #config_ingestion = json.load(open('config.ingestion.json'))
+    with open("/opt/airflow/dags/config.ingestion.json", 'r') as json_data:
+        config_ingestion = json.load(json_data)
     data = request_data(config_ingestion["url"], params=config_ingestion["parameters"])
     df = pd.DataFrame(data)
 
@@ -91,7 +95,7 @@ def preparation(event: dict):
             event (dict): A dictionary with the event parameters, including the "subsource".
     """
     path_config = env.WORK_CONFIG
-    metadado = json.load(open(path_config))
+    metadado = json.load(open("config.preparation.json"))
     path_raw = env.RAW_PATH
     df = pd.read_parquet(path_raw)
 

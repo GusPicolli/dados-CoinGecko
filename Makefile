@@ -9,14 +9,13 @@ export RAW_PATH_DOCKER=/app/AWS/S3/RAW/
 export WORK_PATH_DOCKER=/app/AWS/S3/WORK/
 export RAW_CONFIG_DOCKER=/app/config.ingestion.json
 export WORK_CONFIG_DOCKER=/app/config.preparation.json
-export AIRFLOW_UID=50000
 
 ## VENV ##
 venv:
-	python -m venv venv
+	python -m venv venv 
 
 venv_requirements:
-	venv\Scripts\activate && pip install -r requirements-dev.txt
+	venv\Scripts\activate && pip install -r requirements.txt 
 
 venv_run:
 	venv\Scripts\activate && python src/app.py
@@ -48,7 +47,7 @@ docker_build:
 	cd docker && docker-compose up --build
 
 docker_run_ingestion:
-	cd docker && docker-compose run ingestion
+	cd docker && docker-compose run
 
 docker_run_preparation:
 	cd docker && docker-compose run preparation

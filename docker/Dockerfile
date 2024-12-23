@@ -1,8 +1,7 @@
 # Dockerfile
 FROM apache/airflow:2.2.4-python3.9
-
-WORKDIR /usr/src
-COPY . /usr/src/
+ADD requirements.txt .
+RUN pip install apache-airflow==${AIRFLOW_VERSION} -r requirements.txt
 
 #RUN pip install -r requirements.txt
 

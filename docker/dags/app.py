@@ -1,5 +1,5 @@
 import datetime as dt
-import utils
+from utils import (ingestion, preparation)
 import logging
 
 logger = logging.getLogger(__name__)
@@ -22,7 +22,7 @@ def ingestion_handler(event: dict) -> dict:
         dict: The result from the 'ingestion' function.
     """
     logger.info("Início da ingestão: %s", str(dt.datetime.now()))
-    payload = utils.ingestion(event)
+    payload = ingestion(event)
     logger.info("Fim da ingestão: %s", str(dt.datetime.now()))
     return payload
 
@@ -44,7 +44,7 @@ def preparation_handler(event: dict) -> dict:
         dict: The result from the 'preparation' function.
     """
     logger.info("Início da preparação: %s", str(dt.datetime.now()))
-    payload = utils.preparation(event)
+    payload = preparation(event)
     logger.info("Fim da preparação: %s", str(dt.datetime.now()))
     return payload
 
