@@ -2,8 +2,7 @@ import requests
 import json
 import pandas as pd
 import logging
-import env
-import sys
+import env as env
 
 
 logger = logging.getLogger(__name__)
@@ -75,14 +74,11 @@ def ingestion(event: dict):
         Args:
             event (dict): A dictionary with the event parameters, including the "subsource".
     """
-    #path_config = env.RAW_CONFIG
-    #config_ingestion = json.load(open(path_config))
-    #config_ingestion = json.load(open('config.ingestion.json'))
-    with open("/opt/airflow/dags/config.ingestion.json", 'r') as json_data:
+    path_config = env.RAW_CONFIG
+    with open(path_config, 'r') as json_data:
         config_ingestion = json.load(json_data)
     data = request_data(config_ingestion["url"], params=config_ingestion["parameters"])
     df = pd.DataFrame(data)
-
     path_raw = env.RAW_PATH
     load_data(df, path_raw, event["subsource"])
 
@@ -95,7 +91,7 @@ def preparation(event: dict):
             event (dict): A dictionary with the event parameters, including the "subsource".
     """
     path_config = env.WORK_CONFIG
-    metadado = json.load(open("config.preparation.json"))
+    metadado = json.load(open(path_config))
     path_raw = env.RAW_PATH
     df = pd.read_parquet(path_raw)
 

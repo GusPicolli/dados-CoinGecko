@@ -1,7 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from app import ingestion_handler, preparation_handler
+from src.app import ingestion_handler, preparation_handler
 
 # Define a DAG
 with DAG(
