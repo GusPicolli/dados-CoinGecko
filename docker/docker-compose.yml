@@ -44,8 +44,6 @@ x-airflow-common:
     WORK_CONFIG: /opt/airflow/dags/assets/config.preparation.json
   volumes:
     - ./dags:/opt/airflow/dags
-    - ./src:/opt/airflow/dags/src
-    - ./assets:/opt/airflow/dags/assets
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ./shared:/opt/airflow/shared

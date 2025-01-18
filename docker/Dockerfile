@@ -4,7 +4,10 @@ FROM apache/airflow:2.2.4-python3.9
 ADD requirements.txt .
 RUN pip install apache-airflow==${AIRFLOW_VERSION} -r requirements.txt
 
-WORKDIR /opt/airflow/
+COPY ./src/. /opt/airflow/dags/src
+COPY ./assets/. /opt/airflow/dags/assets
+COPY ./docker/dags/. /opt/airflow/dags
+#WORKDIR /opt/airflow/
 
 ENV RAW_PATH=${RAW_PATH}
 ENV WORK_PATH=${WORK_PATH}
