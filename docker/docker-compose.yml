@@ -43,10 +43,12 @@ x-airflow-common:
     RAW_CONFIG: /opt/airflow/dags/assets/config.ingestion.json
     WORK_CONFIG: /opt/airflow/dags/assets/config.preparation.json
   volumes:
-    - ./dags:/opt/airflow/dags
+    - .././dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - ./shared:/opt/airflow/shared
+    - .././src:/opt/airflow/dags/src
+    - .././assets:/opt/airflow/dags/assets
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

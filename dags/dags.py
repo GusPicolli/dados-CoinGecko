@@ -5,7 +5,7 @@ from app import ingestion_handler, preparation_handler
 
 # Define a DAG
 with DAG(
-    "teste",
+    "coinGecko_coins_api",
     start_date=datetime(2023, 10, 10), 
     schedule_interval=timedelta(minutes=60),
     catchup=False
