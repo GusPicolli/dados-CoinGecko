@@ -3,6 +3,22 @@ export WORK_PATH = ../dados-CoinGecko/AWS/S3/WORK/
 export RAW_CONFIG = ./docker/assets/config.ingestion.json
 export WORK_CONFIG = ./docker/assets/config.preparation.json
 
+export AWS_ACCESS_KEY_ID=
+export AWS_SECRET_ACCESS_KEY=
+export AWS_REGION=us-east-1
+
+terraform/init:
+	(cd terraform && terraform init)
+
+terraform/plan:
+	(cd terraform && terraform plan)
+
+terraform/apply:
+	(cd terraform && terraform apply)
+
+terraform/destroy:
+	(cd terraform && terraform destroy)
+
 venv:
 	python -m venv venv 
 
@@ -63,4 +79,3 @@ snakeviz:
 	snakeviz file_profiling.prof
  
 all: venv venv_requirements venv_run
-

@@ -1,0 +1,40 @@
+name: "Terraform Deploy"
+
+on:
+  push:
+    branches:
+      - dev  # Executa quando faz push na branch main
+  pull_request:
+    branches:
+      - dev  # Também pode rodar em PRs
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛠️ Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 🔑 Configurar credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Defina sua região
+
+      - name: 📦 Instalar Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0  # Última versão estável
+
+      - name: 🏗️ Inicializar Terraform
+        run: terraform init
+        working-directory: terraform  # Caminho da pasta Terraform
+
+      - name: 🔍 Validar Terraform
+        run: terraform validate
+        working-directory: terraform
+
+      - name: 🚀 Aplicar Terraform
+        run: terraform apply -auto-approve
+        working-directory: terraform
