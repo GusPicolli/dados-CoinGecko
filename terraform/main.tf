@@ -1,25 +1,32 @@
-# Definir o provedor AWS
 provider "aws" {
-  region = "us-east-1" # Escolha sua região
+  region = var.aws_region
 }
 
-# Criar um bucket S3 para armazenar os dados do ETL
-resource "aws_s3_bucket" "dados_coingecko" {
-  bucket = "coingecko-bucket"
+## Inclui o repositório ECR
+#module "ecr" {
+#  source = "./"
+#  repository_name = "repositorio-coingecko"
+#}
 
-  tags = {
-    Name        = "ETL CoinGecko"
-    Environment = "dev"
+# Inclui as funções Lambda de ingestão
+module "lambda_ingestao" {
+  source = "./"
+  repository_url = module.ecr.repository_url
+  function_name = "coingecko_etl_ingestao"
+  variables = {
+    RAW_CONFIG = "/opt/airflow/shared/S3/RAW/"
+    RAW_PATH = "/opt/airflow/shared/S3/WORK/"
   }
 }
 
-resource "aws_instance" "etl_server" {
-  ami           = "ami"  # Ubuntu 22.04 LTS
-  instance_type = "t2.nano"  # Instância gratuita para testes
-  #key_name      = "minha-chave-aws"  # Nome da sua chave SSH
-  #security_groups = ["meu-grupo-seguranca"]
-
-  tags = {
-    Name = "ETL-Airflow-Test"
+# Inclui as funções Lambda de preparação
+module "lambda_preparacao" {
+  source = "./"
+  repository_url = module.ecr.repository_url
+  function_name = "coingecko_etl_preparacao"
+  variables = {
+    RAW_PATH = "/opt/airflow/shared/S3/WORK/"
+    WORK_CONFIG = "/opt/airflow/dags/assets/config.preparation.json"
+    WORK_PATH = "/opt/airflow/shared/S3/WORK/"
   }
 }

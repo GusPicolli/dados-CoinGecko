@@ -32,7 +32,7 @@ jobs:
         working-directory: terraform  # Caminho da pasta Terraform
 
       - name: 🔍 Validar Terraform
-        run: terraform validate
+        run: terraform plan
         working-directory: terraform
 
       - name: 🚀 Aplicar Terraform

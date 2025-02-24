@@ -1,7 +1,7 @@
 export RAW_PATH = ../dados-CoinGecko/AWS/S3/RAW/
 export WORK_PATH = ../dados-CoinGecko/AWS/S3/WORK/
-export RAW_CONFIG = ./docker/assets/config.ingestion.json
-export WORK_CONFIG = ./docker/assets/config.preparation.json
+export RAW_CONFIG = ./assets/config.ingestion.json
+export WORK_CONFIG = ./assets/config.preparation.json
 
 export AWS_ACCESS_KEY_ID=
 export AWS_SECRET_ACCESS_KEY=
@@ -44,7 +44,7 @@ requirements:
 	pip install -r requirements.txt
 
 run: 
-	python docker/src/app.py
+	python src/app.py
 
 run_tests:
 	pytest tests/ingestion_preparation_test.py

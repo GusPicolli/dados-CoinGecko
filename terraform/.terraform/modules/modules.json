@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"ecr","Source":"./ecr","Dir":""},{"Key":"lambda_ingestao","Source":"./lambda","Dir":""},{"Key":"lambda_preparacao","Source":"./lambda","Dir":""}]}

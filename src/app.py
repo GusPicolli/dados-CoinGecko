@@ -24,6 +24,7 @@ def ingestion_handler(event: dict) -> dict:
     logger.info("Início da ingestão: %s", str(dt.datetime.now()))
     payload = ingestion(event)
     logger.info("Fim da ingestão: %s", str(dt.datetime.now()))
+    logger.info("Payload gerado: %s", str(payload))
     return payload
 
 
@@ -46,6 +47,7 @@ def preparation_handler(event: dict) -> dict:
     logger.info("Início da preparação: %s", str(dt.datetime.now()))
     payload = preparation(event)
     logger.info("Fim da preparação: %s", str(dt.datetime.now()))
+    logger.info("Payload gerado: %s", str(payload))
     return payload
 
 
@@ -54,6 +56,7 @@ if __name__ == "__main__":
         "subsource": "coingecko"
     })
     preparation_handler({
-        "subsource": "coingecko"
+        "subsource": "coingecko",
+        "path_file": ""
     })
 

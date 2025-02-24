@@ -57,17 +57,19 @@ def load_data(df:pd.DataFrame, path: str, filename: str) -> str:
     """
     try:
         df.to_parquet(f'{path}{filename}.parquet')
-        logger.info(f"Arquivo salvo em {path}{filename}")
+        logger.info(f"Arquivo salvo em {path}")
+        return f"{path}{filename}.parquet"
     except KeyError as e:
         logger.error(f"Chave não encontrada no DataFrame: {e}")
         raise
     except ValueError as e:
         logger.error(f"Erro ao converter os dados para DataFrame: {e}")
+        raise
     except Exception as e:
         logger.error(f"Erro inesperado ao salvar o arquivo: {e}")
         raise
 
-def ingestion(event: dict):
+def ingestion(payload: dict):
     """   No
     Handles the ingestion process: requests data from a URL and saves it as a Parquet file.
         
@@ -80,9 +82,10 @@ def ingestion(event: dict):
     data = request_data(config_ingestion["url"], params=config_ingestion["parameters"])
     df = pd.DataFrame(data)
     path_raw = env.RAW_PATH
-    load_data(df, path_raw, event["subsource"])
+    payload["path_file"] = load_data(df, path_raw, payload["subsource"])
+    return payload
 
-def preparation(event: dict):
+def preparation(payload: dict):
     """
     Handles the preparation process: reads a Parquet file, transforms data types according to metadata, 
         and saves the processed data.
@@ -107,4 +110,5 @@ def preparation(event: dict):
             raise (f"Erro inesperado ao fazer a tratamento dos dados:{e}")
     
     path_work = env.WORK_PATH
-    load_data(df, path_work, event["subsource"])
+    payload["path_file"] = load_data(df, path_work, payload["subsource"])
+    return payload
