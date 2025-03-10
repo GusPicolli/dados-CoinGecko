@@ -1,12 +1,12 @@
 import datetime as dt
 from utils import (ingestion, preparation)
-import logging
+from aws_lambda_powertools import Logger
+from aws_lambda_powertools.utilities.typing import LambdaContext
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = Logger(log_record_order=["level", "message", "location"])
 
 
-def ingestion_handler(event: dict) -> dict:
+def ingestion_handler(event: dict, context=LambdaContext) -> dict:
     """
     Handles data ingestion.
 
@@ -28,7 +28,7 @@ def ingestion_handler(event: dict) -> dict:
     return payload
 
 
-def preparation_handler(event: dict) -> dict:
+def preparation_handler(event: dict, context=LambdaContext) -> dict:
     """
     Handles data preparation.
 
@@ -37,8 +37,7 @@ def preparation_handler(event: dict) -> dict:
     Args:
         event (dict): A dictionary with the parameters for preparation. Example:
             {
-                "subsource": "coingecko",
-                "path": "./AWS/S3/RAW"
+                "subsource": "coingecko"
             }
     
     Returns:
@@ -56,7 +55,6 @@ if __name__ == "__main__":
         "subsource": "coingecko"
     })
     preparation_handler({
-        "subsource": "coingecko",
-        "path_file": ""
+        "subsource": "coingecko"
     })
 

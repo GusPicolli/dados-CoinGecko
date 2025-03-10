@@ -1,12 +1,11 @@
 import requests
 import json
 import pandas as pd
-import logging
+import awswrangler as wr
+from aws_lambda_powertools import Logger
 import env as env
 
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = Logger(log_record_order=["level", "message", "location"])
 
 def request_data(url: str, params:dict) -> dict:
     """
@@ -38,7 +37,7 @@ def request_data(url: str, params:dict) -> dict:
         logger.error(f"Erro inesperado: {e}")
         raise
 
-def load_data(df:pd.DataFrame, path: str, filename: str) -> str:
+def load_data(df_:pd.DataFrame, path: str, filename: str) -> str:
     """
     Saves the DataFrame as a Parquet file to the specified path.
         
@@ -56,9 +55,14 @@ def load_data(df:pd.DataFrame, path: str, filename: str) -> str:
             Exception: For any unexpected errors.
     """
     try:
-        df.to_parquet(f'{path}{filename}.parquet')
+        path_file = f"{path}/{filename}.parquet"
+        logger.info(path_file)
+        wr.s3.to_parquet(
+            df = df_,
+            path=path_file
+        )
         logger.info(f"Arquivo salvo em {path}")
-        return f"{path}{filename}.parquet"
+        return path_file
     except KeyError as e:
         logger.error(f"Chave não encontrada no DataFrame: {e}")
         raise
@@ -79,10 +83,17 @@ def ingestion(payload: dict):
     path_config = env.RAW_CONFIG
     with open(path_config, 'r') as json_data:
         config_ingestion = json.load(json_data)
-    data = request_data(config_ingestion["url"], params=config_ingestion["parameters"])
+    data = request_data(
+        config_ingestion["url"],
+        params=config_ingestion["parameters"]
+    )
     df = pd.DataFrame(data)
     path_raw = env.RAW_PATH
-    payload["path_file"] = load_data(df, path_raw, payload["subsource"])
+    payload["path_file"] = load_data(
+        df,
+        path_raw, 
+        payload["subsource"]
+    )
     return payload
 
 def preparation(payload: dict):
@@ -96,7 +107,9 @@ def preparation(payload: dict):
     path_config = env.WORK_CONFIG
     metadado = json.load(open(path_config))
     path_raw = env.RAW_PATH
-    df = pd.read_parquet(path_raw)
+    df = wr.s3.read_parquet(
+        path_raw
+    )
 
     for coluna in metadado:
         try:
@@ -110,5 +123,9 @@ def preparation(payload: dict):
             raise (f"Erro inesperado ao fazer a tratamento dos dados:{e}")
     
     path_work = env.WORK_PATH
-    payload["path_file"] = load_data(df, path_work, payload["subsource"])
+    payload["path_file"] = load_data(
+        df, 
+        path_work, 
+        payload["subsource"]
+    )
     return payload

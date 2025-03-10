@@ -3,26 +3,26 @@ locals {
     ingestao = {
       name              = "coingecko_etl_ingestao"
       variables = {
-        RAW_CONFIG = "/opt/airflow/shared/S3/RAW/"   
-        RAW_PATH   = "/opt/airflow/shared/S3/WORK/"
+        RAW_CONFIG = "./config.ingestion.json"
+        RAW_PATH   = "s3://dataops-treinamento/coingecko_etl/raw"
       }
       timeout           = "60"
       memory_size       = "512"
       ephemeral_storage = "512"
-      command           = "app.to_work"
+      command           = "app.ingestion_handler"
       vpc_config        = false
     },
     preparacao = {
       name              = "coingecko_etl_preparacao"
       variables = {
-        RAW_PATH   = "/opt/airflow/shared/S3/WORK/"
-        WORK_CONFIG = "/opt/airflow/dags/assets/config.preparation.json"
-        WORK_PATH   = "/opt/airflow/shared/S3/WORK/"
+        WORK_CONFIG = "./config.preparation.json"
+        WORK_PATH   = "s3://dataops-treinamento/coingecko_etl/work"
+        RAW_PATH   = "s3://dataops-treinamento/coingecko_etl/raw"
       }
       timeout           = "60"
       memory_size       = "512"
       ephemeral_storage = "512"
-      command           = "app.to_work"
+      command           = "app.preparation_handler"
       vpc_config        = false
     }
   }
@@ -46,7 +46,7 @@ resource "aws_lambda_function" "lambda" {
   }
 
   package_type = "Image"
-  image_uri    = "${var.repository_url}:latest"
+  image_uri    = "${aws_ecr_repository.repository_pipeline.repository_url}:latest"
 
   timeout = each.value.timeout
 
@@ -54,11 +54,6 @@ resource "aws_lambda_function" "lambda" {
 
   ephemeral_storage {
     size = each.value.ephemeral_storage
-  }
-
-  vpc_config {
-    subnet_ids         = each.value.vpc_config ? module.network.private_subnets : []
-    security_group_ids = each.value.vpc_config ? [aws_security_group.lambda_sg.id] : []
   }
 
   depends_on = [null_resource.docker_ecr]
@@ -82,4 +77,47 @@ resource "aws_iam_role" "lambda_role" {
 resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy" "lambda_ecr_policy" {
+  name = "lambda_ecr_policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:BatchCheckLayerAvailability"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda_s3_policy" {
+  name = "lambda_s3_policy"
+  role = aws_iam_role.lambda_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::dataops-treinamento",
+          "arn:aws:s3:::dataops-treinamento/*"
+        ]
+      }
+    ]
+  })
 }

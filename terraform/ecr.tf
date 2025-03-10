@@ -1,5 +1,9 @@
+locals {
+  repository_name = "etl_coningecko"
+}
+
 resource "aws_ecr_repository" "repository_pipeline" {
-  name = var.repository_name
+  name = local.repository_name
 
   image_tag_mutability = "MUTABLE"
 
@@ -10,18 +14,18 @@ resource "aws_ecr_repository" "repository_pipeline" {
 
 resource "null_resource" "docker_ecr" {
   triggers = {
-    ecr_repository_name = var.repository_name
+    ecr_repository_name = local.repository_name
   }
 
   provisioner "local-exec" {
     command = <<EOF
-      docker build -t ${var.repository_name}:latest -f ../docker/Dockerfile ../
+      docker build -t ${local.repository_name}:latest -f ../docker/Dockerfile_app ../ 
     EOF
   }
 
   provisioner "local-exec" {
     command = <<EOF
-      docker tag ${var.repository_name}:latest ${aws_ecr_repository.repository_pipeline.repository_url}:latest
+      docker tag ${local.repository_name}:latest ${aws_ecr_repository.repository_pipeline.repository_url}:latest
     EOF
   }
 
@@ -33,7 +37,13 @@ resource "null_resource" "docker_ecr" {
 
   depends_on = [aws_ecr_repository.repository_pipeline]
 }
+
 output "repository_url" {
   description = "The URL of the ECR repository."
   value       = aws_ecr_repository.repository_pipeline.repository_url
+}
+
+output "repository_name" {
+  description = "The name of the ECR repository."
+  value       = aws_ecr_repository.repository_pipeline.name
 }
