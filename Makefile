@@ -51,15 +51,9 @@ run_tests:
 
 ## DOCKER ##
 
-docker_build:
+docker_build_airflow:
 	cd docker && docker-compose up --build
 
-docker_run_ingestion:
-	cd docker && docker-compose run
-
-docker_run_preparation:
-	cd docker && docker-compose run preparation
-	
 docker_run:
 	cd docker && \
     docker-compose run airflow-worker airflow users create --role Admin --username admin --email admin --firstname admin --lastname admin --password admin && \

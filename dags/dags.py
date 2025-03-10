@@ -1,9 +1,10 @@
 from airflow import DAG
-from airflow.operators.python import PythonOperator
+from airflow.providers.amazon.aws.operators.lambda_function import LambdaInvokeFunctionOperator
 from datetime import datetime, timedelta
-from app import ingestion_handler, preparation_handler
 
-# Define a DAG
+ingestion_lambda_function_name = "coingecko_etl_ingestao"
+preparation_lambda_function_name = "coingecko_etl_preparacao"
+
 with DAG(
     "coinGecko_coins_api",
     start_date=datetime(2023, 10, 10), 
@@ -11,19 +12,19 @@ with DAG(
     catchup=False
 ) as dag:
 
-    # Task para o ingestion_handler
-    t0 = PythonOperator(
+
+    t0 = LambdaInvokeFunctionOperator(
         task_id='ingestion_task',
-        python_callable=ingestion_handler,
-        op_kwargs =  {"event": {"subsource": "coingecko"}} # Chamando a função diretamente
+        function_name=ingestion_lambda_function_name,
+        payload={"subsource": "coingecko"},
+        aws_conn_id='aws_default'
     )
 
-    # Task para o preparation_handler
-    t1 = PythonOperator(
+    t1 = LambdaInvokeFunctionOperator(
         task_id='preparation_task',
-        python_callable=preparation_handler,
-        op_kwargs =  {"event": {"subsource": "coingecko"}}   # Chamando a função diretamente
+        function_name=preparation_lambda_function_name,
+        payload={"subsource": "coingecko"},
+        aws_conn_id='aws_default'
     )
 
-    # Definindo a sequência de execução
     t0 >> t1
