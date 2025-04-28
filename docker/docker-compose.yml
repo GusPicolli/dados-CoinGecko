@@ -37,6 +37,8 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-} #confluent-kafka snowflake-connector-python apache-airflow-providers-snowflake airflow-provider-kafka 
     RAW_PATH: /opt/airflow/shared/S3/RAW/
     WORK_PATH: /opt/airflow/shared/S3/WORK/
@@ -147,7 +149,6 @@ services:
           echo -e "\033[1;31mERROR!!!: Too old Airflow version $${airflow_version}!\e[0m"
           echo "The minimum Airflow version supported: $${min_airflow_version}. Only use this or higher!"
           echo
-          exit 1
         fi
         if [[ -z "${AIRFLOW_UID}" ]]; then
           echo

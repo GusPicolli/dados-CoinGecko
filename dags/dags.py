@@ -1,4 +1,5 @@
 from airflow import DAG
+import json
 from airflow.providers.amazon.aws.operators.lambda_function import LambdaInvokeFunctionOperator
 from datetime import datetime, timedelta
 
@@ -12,18 +13,18 @@ with DAG(
     catchup=False
 ) as dag:
 
-
     t0 = LambdaInvokeFunctionOperator(
         task_id='ingestion_task',
         function_name=ingestion_lambda_function_name,
-        payload={"subsource": "coingecko"},
+        payload=json.dumps({"subsource": "coingecko"}),
         aws_conn_id='aws_default'
     )
+
 
     t1 = LambdaInvokeFunctionOperator(
         task_id='preparation_task',
         function_name=preparation_lambda_function_name,
-        payload={"subsource": "coingecko"},
+        payload="{{ task_instance.xcom_pull(task_ids='ingestion_task') }}",
         aws_conn_id='aws_default'
     )
 

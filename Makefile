@@ -4,7 +4,7 @@ export RAW_CONFIG = ./assets/config.ingestion.json
 export WORK_CONFIG = ./assets/config.preparation.json
 
 export AWS_ACCESS_KEY_ID = 
-export AWS_SECRET_ACCESS_KEY =
+export AWS_SECRET_ACCESS_KEY = 
 export AWS_REGION=us-east-1
 
 terraform/init:
@@ -53,6 +53,9 @@ run_tests:
 
 docker_build_airflow:
 	cd docker && docker-compose up --build
+
+docker_down:
+	cd docker && docker-compose down --build
 
 docker_run:
 	cd docker && \

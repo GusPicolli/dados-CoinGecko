@@ -106,7 +106,7 @@ def preparation(payload: dict):
     """
     path_config = env.WORK_CONFIG
     metadado = json.load(open(path_config))
-    path_raw = env.RAW_PATH
+    path_raw = payload["path_raw"]
     df = wr.s3.read_parquet(
         path_raw
     )
